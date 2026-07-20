@@ -253,14 +253,8 @@
     const link = event.target.closest("a[href]");
     if (!link) return;
 
-    if (link.classList.contains("logo")) {
-      event.preventDefault();
-      const home = homeUrl();
-      if (!isSamePage(home, location.href)) {
-        location.assign(home);
-      }
-      return;
-    }
+    // Let the browser handle the homepage logo natively.
+    if (link.classList.contains("logo")) return;
 
     if (!shouldNavigate(link)) return;
 
