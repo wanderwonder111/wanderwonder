@@ -32,14 +32,33 @@
     return depth ? "../".repeat(depth) : "";
   }
 
-  function homeHref(pageUrl = location.href) {
-    return `${jsPrefix(pageUrl)}index.html`;
+  function siteRoot(pageUrl = location.href) {
+    const u = new URL(pageUrl, location.href);
+    const parts = u.pathname.split("/").filter(Boolean);
+
+    for (const root of PROJECT_ROOTS) {
+      const rootIndex = parts.lastIndexOf(root);
+      if (rootIndex >= 0) {
+        return `${u.origin}/${parts.slice(0, rootIndex + 1).join("/")}/`;
+      }
+    }
+
+    const key = pageKey(pageUrl);
+    const pageName = key.split("/").pop() || "index.html";
+    const pagePath = u.pathname.endsWith("/")
+      ? u.pathname
+      : u.pathname.slice(0, u.pathname.lastIndexOf("/") + 1);
+    return `${u.origin}${pagePath || "/"}`;
+  }
+
+  function homeUrl(pageUrl = location.href) {
+    return new URL("index.html", siteRoot(pageUrl)).href;
   }
 
   function syncLogoHref(pageUrl = location.href) {
-    const logo = document.querySelector(".page .col-left-header .logo");
-    if (!logo) return;
-    logo.setAttribute("href", homeHref(pageUrl));
+    document.querySelectorAll(".page .col-left-header .logo").forEach((logo) => {
+      logo.setAttribute("href", homeUrl(pageUrl));
+    });
   }
 
   function isSamePage(a, b) {
@@ -160,8 +179,8 @@
     syncLogoHref(pageUrl);
   }
 
-  function isPersistentNode(node, canvas, savedHeader) {
-    if (node === canvas || node === savedHeader) return true;
+  function isPersistentNode(node, canvas) {
+    if (node === canvas) return true;
     if (node.tagName !== "SCRIPT") return false;
 
     const src = node.getAttribute("src") || "";
@@ -175,46 +194,25 @@
   async function swapPage(doc, pageUrl, push) {
     cleanupPage();
 
-    const currentHeader = document.querySelector(".page .col-left-header");
-    const nextHeader = doc.querySelector(".page .col-left-header");
-    const preserveHeader =
-      currentHeader &&
-      nextHeader &&
-      currentHeader.textContent.trim() === nextHeader.textContent.trim();
-
-    let savedHeader = null;
-    if (preserveHeader) {
-      savedHeader = currentHeader;
-      const logo = savedHeader.querySelector(".logo");
-      if (logo) logo.setAttribute("href", homeHref(pageUrl));
-      savedHeader.remove();
-    }
-
     document.title = doc.title;
     document.body.className = doc.body.className;
 
     const canvas = document.getElementById("draw-canvas");
     [...document.body.children].forEach((node) => {
-      if (isPersistentNode(node, canvas, savedHeader)) return;
+      if (isPersistentNode(node, canvas)) return;
       node.remove();
     });
 
-    let headerInserted = false;
     [...doc.body.children].forEach((node) => {
       if (node.tagName === "SCRIPT" || node.id === "draw-canvas") return;
-
-      const imported = document.importNode(node, true);
-      if (!headerInserted && savedHeader && imported.querySelector?.(".col-left-header")) {
-        imported.querySelector(".col-left-header")?.replaceWith(savedHeader);
-        headerInserted = true;
-      }
-      document.body.appendChild(imported);
+      document.body.appendChild(document.importNode(node, true));
     });
 
     if (push) {
       history.pushState({ wwUrl: pageUrl }, "", pageUrl);
     }
 
+    syncLogoHref(pageUrl);
     await initPage(doc, pageUrl);
   }
 
@@ -253,6 +251,17 @@
     }
 
     const link = event.target.closest("a[href]");
+    if (!link) return;
+
+    if (link.classList.contains("logo")) {
+      event.preventDefault();
+      const home = homeUrl();
+      if (!isSamePage(home, location.href)) {
+        location.assign(home);
+      }
+      return;
+    }
+
     if (!shouldNavigate(link)) return;
 
     event.preventDefault();
