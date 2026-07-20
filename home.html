@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preload" href="assets/Arial Narrow.ttf" as="font" type="font/ttf" crossorigin>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wander wonder</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-home">
+  <canvas id="draw-canvas" aria-hidden="true"></canvas>
+
+  <div class="page page--home">
+    <aside class="col-left">
+      <div class="col-header col-left-header">
+        <a href="home.html" class="logo">wander wonder</a>
+      </div>
+    </aside>
+
+    <div class="col-center-panel page-home__spacer" aria-hidden="true"></div>
+
+    <aside class="col-right">
+      <nav class="col-header top-nav">
+        <a href="about.html" class="link-dotted">about</a>
+        <a href="routes.html" class="link-dotted">routes</a>
+      </nav>
+    </aside>
+  </div>
+
+  <div class="page-content" id="page-content">
+    <main class="canvas" aria-hidden="true">
+      <!-- solid dots (left → right) -->
+      <span class="dot dot--solid dot--trigger" data-caption="0" data-href="Rietveld/overview_Rietveld.html" style="left: 22.4%; top: 55.2%;">
+        <img
+          class="dot-preview"
+          src="assets/Rietveld/rietveld_07.jpg"
+          alt=""
+        >
+      </span>
+      <span class="dot dot--solid dot--trigger" data-caption="1" data-href="EKA/Overview_EKA.html" style="left: 40.5%; top: 38.7%;">
+        <img
+          class="dot-preview"
+          src="assets/EKA/EKA_ARCHIL0007.jpg"
+          alt=""
+        >
+      </span>
+      <span class="dot dot--solid dot--trigger" data-caption="2" data-href="Basel/overview_Basel.html" style="left: 52.6%; top: 60.7%;">
+        <img
+          class="dot-preview"
+          src="assets/Basel/Basel_09.jpg"
+          alt=""
+          style="max-width: 230px;"
+        >
+      </span>
+      <span class="dot dot--solid dot--trigger" data-caption="3" data-href="UMPRUM/overview_UMPRUM.html" style="left: 57.1%; top: 42.6%;">
+        <img
+          class="dot-preview"
+          src="assets/UMPRUM x HEAD GENEVA/From students/IMG_2213.jpeg"
+          alt=""
+        >
+      </span>
+      <span class="dot dot--solid dot--trigger" data-caption="4" data-href="DAI/overview_DAI.html" style="left: 76.1%; top: 35.1%;">
+        <img
+          class="dot-preview"
+          src="assets/DAI/zhuang/DAI_02.jpeg"
+          alt=""
+        >
+      </span>
+
+      <div class="dot-captions" aria-hidden="true">
+        <p class="dot-caption" hidden>
+          Amsterdam to Cà de Monti<br>
+          Gerrit Rietveld Academie
+        </p>
+        <p class="dot-caption" hidden>
+          Tallinn to Berlin/Lisbon<br>
+          Estonian Academy of Arts
+        </p>
+        <p class="dot-caption" hidden>
+          Basel to Museums<br>
+          FHNW Academy of Arts and Design
+        </p>
+        <p class="dot-caption" hidden>
+          Prague / Genéve to Mount Sněžka / River Saône<br>
+          UMPRUM Prague, HEAD Geneva
+        </p>
+        <p class="dot-caption" hidden>
+          Nowhere to Somewhere<br>
+          Dutch Art Institute
+        </p>
+      </div>
+
+      <!-- hollow dots -->
+      <span class="dot dot--hollow" style="left: 42%; top: 8%;"></span>
+      <span class="dot dot--hollow" style="left: 97%; top: 12%;"></span>
+      <span class="dot dot--hollow" style="left: 7%; top: 26%;"></span>
+      <span class="dot dot--hollow" style="left: 18%; top: 16%;"></span>
+      <span class="dot dot--hollow" style="left: 25%; top: 23%;"></span>
+      <span class="dot dot--hollow" style="left: 19%; top: 46%;"></span>
+      <span class="dot dot--hollow" style="left: 9%; top: 65%;"></span>
+      <span class="dot dot--hollow" style="left: 14%; top: 84%;"></span>
+      <span class="dot dot--hollow" style="left: 48%; top: 23%;"></span>
+      <span class="dot dot--hollow" style="left: 37%; top: 62%;"></span>
+      <span class="dot dot--hollow" style="left: 39%; top: 87%;"></span>
+      <span class="dot dot--hollow" style="left: 70%; top: 19%;"></span>
+      <span class="dot dot--hollow" style="left: 65%; top: 57%;"></span>
+      <span class="dot dot--hollow" style="left: 57%; top: 76%;"></span>
+      <span class="dot dot--hollow" style="left: 68%; top: 82%;"></span>
+      <span class="dot dot--hollow" style="left: 88%; top: 21%;"></span>
+      <span class="dot dot--hollow" style="left: 85%; top: 47%;"></span>
+      <span class="dot dot--hollow" style="left: 84%; top: 70%;"></span>
+      <span class="dot dot--hollow" style="left: 92%; top: 68%;"></span>
+      <span class="dot dot--hollow" style="left: 90%; top: 89%;"></span>
+    </main>
+  </div>
+
+  <script src="js/cursor-draw.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/dots.js"></script>
+  <script src="js/routes.js"></script>
+</body>
+</html>

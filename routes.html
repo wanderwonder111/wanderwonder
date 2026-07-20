@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>wander wonder — routes</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-routes">
+  <canvas id="draw-canvas" aria-hidden="true"></canvas>
+  <iframe id="routes-backdrop" class="routes-backdrop" title="" tabindex="-1" aria-hidden="true"></iframe>
+
+  <div class="routes-overlay">
+    <div class="page page--routes">
+      <aside class="col-left">
+        <div class="col-header col-left-header">
+          <a href="home.html" class="logo">wander wonder</a>
+        </div>
+      </aside>
+
+      <div class="col-center-panel" aria-hidden="true"></div>
+
+      <aside class="col-right">
+        <nav class="col-header top-nav">
+          <a href="about.html" class="link-dotted">about</a>
+          <a href="routes.html" class="link-dotted" aria-current="page">routes</a>
+        </nav>
+      </aside>
+
+      <div class="routes-stage">
+        <ol class="routes-list">
+          <li class="route">
+            <a href="Rietveld/overview_Rietveld.html" class="route__link">
+              <span class="route__bullet" aria-hidden="true"></span>
+              <span class="route__text">
+                <span class="route__title link-dotted">Amsterdam to Cà de Monti</span>
+                <span class="route__school">Gerrit Rietveld Academie</span>
+              </span>
+            </a>
+          </li>
+          <li class="route">
+            <a href="EKA/Overview_EKA.html" class="route__link">
+              <span class="route__bullet" aria-hidden="true"></span>
+              <span class="route__text">
+                <span class="route__title link-dotted">Tallinn to Berlin/Lisbon</span>
+                <span class="route__school">Estonian Academy of Arts</span>
+              </span>
+            </a>
+          </li>
+          <li class="route">
+            <a href="Basel/overview_Basel.html" class="route__link">
+              <span class="route__bullet" aria-hidden="true"></span>
+              <span class="route__text">
+                <span class="route__title link-dotted">Basel to Museums</span>
+                <span class="route__school">Academy of Arts and Design</span>
+              </span>
+            </a>
+          </li>
+          <li class="route">
+            <a href="UMPRUM/overview_UMPRUM.html" class="route__link">
+              <span class="route__bullet" aria-hidden="true"></span>
+              <span class="route__text">
+                <span class="route__title link-dotted">Prague / Genève to Mount Sněžka / River</span>
+                <span class="route__school">UMPRUM Prague &amp; HEAD Geneve</span>
+              </span>
+            </a>
+          </li>
+          <li class="route">
+            <a href="DAI/overview_DAI.html" class="route__link">
+              <span class="route__bullet" aria-hidden="true"></span>
+              <span class="route__text">
+                <span class="route__title link-dotted">Nowhere to Somewhere</span>
+                <span class="route__school">The Dutch Art Institute</span>
+              </span>
+            </a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/cursor-draw.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/routes.js"></script>
+</body>
+</html>
