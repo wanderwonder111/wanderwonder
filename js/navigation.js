@@ -23,7 +23,7 @@
       }
     }
 
-    return parts.slice(start).join("/") || "home.html";
+    return parts.slice(start).join("/") || "index.html";
   }
 
   function jsPrefix(url) {
@@ -140,6 +140,18 @@
     }
   }
 
+  function isPersistentNode(node, canvas, savedHeader) {
+    if (node === canvas || node === savedHeader) return true;
+    if (node.tagName !== "SCRIPT") return false;
+
+    const src = node.getAttribute("src") || "";
+    return (
+      src.includes("cursor-draw.js") ||
+      src.includes("navigation.js") ||
+      src.includes("routes.js")
+    );
+  }
+
   async function swapPage(doc, pageUrl, push) {
     cleanupPage();
 
@@ -161,31 +173,21 @@
 
     const canvas = document.getElementById("draw-canvas");
     [...document.body.children].forEach((node) => {
-      if (node === canvas || node === savedHeader) return;
-      if (node.tagName === "SCRIPT") {
-        const src = node.getAttribute("src") || "";
-        if (
-          src.includes("cursor-draw.js") ||
-          src.includes("navigation.js") ||
-          src.includes("routes.js")
-        ) {
-          return;
-        }
-        node.remove();
-        return;
-      }
+      if (isPersistentNode(node, canvas, savedHeader)) return;
       node.remove();
     });
 
-    const nextPage = doc.querySelector(".page");
-    if (!nextPage) return;
+    let headerInserted = false;
+    [...doc.body.children].forEach((node) => {
+      if (node.tagName === "SCRIPT" || node.id === "draw-canvas") return;
 
-    const page = document.importNode(nextPage, true);
-    if (savedHeader) {
-      page.querySelector(".col-left-header")?.replaceWith(savedHeader);
-    }
-
-    document.body.appendChild(page);
+      const imported = document.importNode(node, true);
+      if (!headerInserted && savedHeader && imported.querySelector?.(".col-left-header")) {
+        imported.querySelector(".col-left-header")?.replaceWith(savedHeader);
+        headerInserted = true;
+      }
+      document.body.appendChild(imported);
+    });
 
     if (push) {
       history.pushState({ wwUrl: pageUrl }, "", pageUrl);

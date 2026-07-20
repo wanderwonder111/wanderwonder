@@ -35,7 +35,7 @@
       }
     }
 
-    return parts.slice(start).join("/") || "home.html";
+    return parts.slice(start).join("/") || "index.html";
   }
 
   function isRoutesPage(page) {
@@ -130,7 +130,7 @@
           );
           const rel =
             rootIndex >= 0 ? refParts.slice(rootIndex + 1) : refParts;
-          const refPage = rel.join("/") || "home.html";
+          const refPage = rel.join("/") || "index.html";
           if (!isRoutesPage(refPage)) src = refPage;
         }
       } catch (_) {}
@@ -142,7 +142,7 @@
       return depth ? "../".repeat(depth) : "";
     })();
 
-    iframe.src = src ? `${prefix}${src}` : `${prefix}home.html`;
+    iframe.src = src ? `${prefix}${src}` : `${prefix}index.html`;
   };
 
   window.__wwInitRoutesBackdrop();

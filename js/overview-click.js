@@ -10,7 +10,7 @@
 
   const imageSets = {
     eka: [
-      "assets/EKA/EKA_ARCHIL0007.JPG",
+      "assets/EKA/EKA_ARCHIL0007.jpg",
       "assets/EKA/EKA(IG)/487770583_18059732300039683_8008377844106969067_n.jpg",
       "assets/EKA/EKA_ARCHIL1271.jpeg",
       "assets/EKA/EKA(IG)/IMG_3182.jpg",
@@ -30,7 +30,7 @@
       "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-12.jpg",
       "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-16.jpg",
       "assets/UMPRUM x HEAD GENEVA/From students/IMG_1735.jpeg",
-      "assets/UMPRUM x HEAD GENEVA/From students/IMG_1912.JPG",
+      "assets/UMPRUM x HEAD GENEVA/From students/IMG_1912.jpg",
       "assets/UMPRUM x HEAD GENEVA/From students/IMG_2469.jpeg",
       "assets/UMPRUM x HEAD GENEVA/From students/Workshop.jpg",
       "assets/UMPRUM x HEAD GENEVA/From students/toman-purslova-margiotta-allemand_bts_krkonose_01.jpg",
@@ -49,8 +49,8 @@
       "assets/DAI/flip_driest_performing_the_living_berlin_jpg_2400x_d17b71a1e988bd74de4bdc7bbb7d.jpg(2400x)(D465B4CEC4020DBEF67FCDA3CFD423CF).jpg",
     ],
     basel: [
-      { src: "assets/Basel/Basel_01.JPG", scale: 1.0 },
-      { src: "assets/Basel/Basel_02.JPG", scale: 0.88 },
+      { src: "assets/Basel/Basel_01.jpg", scale: 1.0 },
+      { src: "assets/Basel/Basel_02.jpg", scale: 0.88 },
       { src: "assets/Basel/Basel_03.jpeg", scale: 0.62 },
       { src: "assets/Basel/Basel_04.jpeg", scale: 0.68 },
       { src: "assets/Basel/Basel_05.jpeg", scale: 0.55 },
@@ -391,11 +391,18 @@
     const bounds = getScatterBounds();
     const leftColumnZone = getLeftColumnZone();
     const otherTextZones = getOtherTextZones();
-    const loaded = await Promise.all(images.map(preloadImage));
+    const results = await Promise.allSettled(images.map(preloadImage));
+    const loaded = results
+      .map((result, index) => ({ result, index }))
+      .filter(({ result }) => result.status === "fulfilled")
+      .map(({ result, index }) => ({ source: result.value, index }));
+
+    if (!loaded.length) return;
+
     const cells = buildGridCells(bounds, loaded.length);
     const assignments = assignCells(cells, loaded.length, leftColumnZone);
 
-    loaded.forEach((source, index) => {
+    loaded.forEach(({ source, index }) => {
       const img = document.createElement("img");
       const { w, h } = getDisplayDimensions(
         source.naturalWidth,
@@ -425,5 +432,5 @@
     });
   }
 
-  scatterImages();
+  scatterImages().catch(() => {});
 })();
