@@ -145,6 +145,7 @@
       scripts.push(`${prefix}dots.js`);
     }
     if (body.classList.contains("page-overview")) {
+      scripts.push(`${prefix}overview-images.js`);
       scripts.push(`${prefix}overview-click.js`);
     }
     if (body.querySelector(".gallery-scroll")) {
@@ -238,6 +239,20 @@
     }
   }
 
+  function prefetchOverviewFromTarget(target) {
+    const link = target.closest("a[href], .dot--trigger[data-href]");
+    if (!link || !window.__wwOverviewImages) return;
+
+    const href = link.dataset.href || link.getAttribute("href");
+    if (!href || !/overview_|Overview_/i.test(href)) return;
+
+    window.__wwOverviewImages.prefetchOverview(href);
+  }
+
+  document.addEventListener("mouseover", (event) => {
+    prefetchOverviewFromTarget(event.target);
+  }, { passive: true });
+
   document.addEventListener("click", (event) => {
     if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey) {
       return;
@@ -246,6 +261,7 @@
     const dot = event.target.closest(".dot--trigger[data-href]");
     if (dot) {
       event.preventDefault();
+      prefetchOverviewFromTarget(dot);
       navigateTo(dot.dataset.href);
       return;
     }
@@ -261,6 +277,7 @@
     event.preventDefault();
     const href = link.getAttribute("href");
     if (isRoutesHref(href)) storeRoutesBackdrop();
+    if (/overview_|Overview_/i.test(href || "")) prefetchOverviewFromTarget(link);
     navigateTo(href);
   });
 

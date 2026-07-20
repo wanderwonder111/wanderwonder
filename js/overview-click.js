@@ -2,97 +2,25 @@
   const layer = document.getElementById("overview-images");
   if (!layer || !document.body.classList.contains("page-overview")) return;
 
+  const overviewImages = window.__wwOverviewImages;
+  if (!overviewImages) return;
+
+  const {
+    parseImageEntry,
+    assetRoot,
+    getSetForBody,
+    preloadImage,
+  } = overviewImages;
+
   const isEkaOverview = document.body.classList.contains("page-overview-eka");
   const isUmprumOverview = document.body.classList.contains("page-overview-umprum");
   const isDaiOverview = document.body.classList.contains("page-overview-dai");
   const isBaselOverview = document.body.classList.contains("page-overview-basel");
-  const assetRoot = /\/(Basel|Rietveld|EKA|UMPRUM|DAI)\//.test(location.pathname) ? "../" : "";
+  const assetRootPath = assetRoot();
 
-  const imageSets = {
-    eka: [
-      "assets/EKA/EKA_ARCHIL0007.jpg",
-      "assets/EKA/EKA(IG)/487770583_18059732300039683_8008377844106969067_n.jpg",
-      "assets/EKA/EKA_ARCHIL1271.jpeg",
-      "assets/EKA/EKA(IG)/IMG_3182.jpg",
-      "assets/EKA/EKA_ARCHIL1304.jpeg",
-      "assets/EKA/EKA(IG)/IMG_3183.jpg",
-      "assets/EKA/EKA_ARCHIL2371.JPG",
-      "assets/EKA/EKA(IG)/IMG_3184.jpg",
-      "assets/EKA/EKA_ARCHIL2546.jpeg",
-      "assets/EKA/EKA(IG)/IMG_3185.jpg",
-      "assets/EKA/EKA_ARCHIL2585.jpeg",
-      "assets/EKA/EKA_ARCHIL3330.jpeg",
-    ],
-    umprum: [
-      "assets/UMPRUM x HEAD GENEVA/From students/IMG_2213.jpeg",
-      "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-3.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-7.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-12.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/Exhibition-16.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/IMG_1735.jpeg",
-      "assets/UMPRUM x HEAD GENEVA/From students/IMG_1912.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/IMG_2469.jpeg",
-      "assets/UMPRUM x HEAD GENEVA/From students/Workshop.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/toman-purslova-margiotta-allemand_bts_krkonose_01.jpg",
-      "assets/UMPRUM x HEAD GENEVA/From students/toman-purslova-margiotta-allemand_bts_krkonose_04.JPG",
-    ],
-    dai: [
-      "assets/DAI/zhuang/DAI_02.jpeg",
-      "assets/DAI/zhuang/DAI_06.jpeg",
-      "assets/DAI/zhuang/DAI_07.jpeg",
-      "assets/DAI/zhuang/DAI_09.jpeg",
-      "assets/DAI/zhuang/DAI_10.jpeg",
-      "assets/DAI/zhuang/DAI_13.jpeg",
-      "assets/DAI/zhuang/DAI_14.jpeg",
-      "assets/DAI/zhuang/DAI_17.jpeg",
-      "assets/DAI/zhuang/DAI_19.jpeg",
-      "assets/DAI/flip_driest_performing_the_living_berlin_jpg_2400x_d17b71a1e988bd74de4bdc7bbb7d.jpg(2400x)(D465B4CEC4020DBEF67FCDA3CFD423CF).jpg",
-    ],
-    basel: [
-      { src: "assets/Basel/Basel_01.jpg", scale: 1.0 },
-      { src: "assets/Basel/Basel_02.jpg", scale: 0.88 },
-      { src: "assets/Basel/Basel_03.jpeg", scale: 0.62 },
-      { src: "assets/Basel/Basel_04.jpeg", scale: 0.68 },
-      { src: "assets/Basel/Basel_05.jpeg", scale: 0.55 },
-      { src: "assets/Basel/Basel_06.jpeg", scale: 0.95 },
-      { src: "assets/Basel/Basel_07.jpeg", scale: 0.6 },
-      { src: "assets/Basel/Basel_08.jpeg", scale: 0.7 },
-      { src: "assets/Basel/Basel_09.jpg", scale: 0.65 },
-      { src: "assets/Basel/Basel_10.jpeg", scale: 0.72 },
-    ],
-    rietveld: [
-      "assets/Rietveld/rietveld_01.jpg",
-      "assets/Rietveld/VELKO/Velko (3) 2.jpeg",
-      "assets/Rietveld/rietveld_02.jpg",
-      "assets/Rietveld/Habitat/Habitat_1.JPG",
-      "assets/Rietveld/rietveld_03.jpg",
-      "assets/Rietveld/Habitat/habitat_02.jpg",
-      "assets/Rietveld/rietveld_04.jpg",
-      "assets/Rietveld/rietveld_05.jpg",
-      "assets/Rietveld/Habitat/Habitat_03.jpg",
-      "assets/Rietveld/rietveld_07.jpg",
-      "assets/Rietveld/rietveld_08.jpg",
-    ],
-  };
-
-  function parseImageEntry(item) {
-    if (typeof item === "string") return { src: item, scale: null };
-    return { src: item.src, scale: item.scale ?? null };
-  }
-
-  const selectedSet =
-    isEkaOverview
-      ? imageSets.eka
-      : isUmprumOverview
-        ? imageSets.umprum
-        : isDaiOverview
-          ? imageSets.dai
-          : isBaselOverview
-            ? imageSets.basel
-            : imageSets.rietveld;
-
+  const selectedSet = getSetForBody(document.body);
   const imageEntries = selectedSet.map(parseImageEntry);
-  const images = imageEntries.map((entry) => assetRoot + entry.src);
+  const images = imageEntries.map((entry) => assetRootPath + entry.src);
 
   const sizeRange = (() => {
     if (isBaselOverview) {
@@ -331,12 +259,60 @@
     return { x, y };
   }
 
-  function preloadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
+  function placeImage(source, index, cells, assignments, bounds, leftColumnZone, otherTextZones) {
+    const img = document.createElement("img");
+    const { w, h } = getDisplayDimensions(
+      source.naturalWidth,
+      source.naturalHeight,
+      imageEntries[index].scale
+    );
+    const cell = assignments[index] || cells[index % cells.length];
+    const { x, y } = pickPosition(
+      cell,
+      w,
+      h,
+      bounds,
+      leftColumnZone,
+      otherTextZones
+    );
+
+    img.className = "overview-placed-img";
+    img.src = images[index];
+    img.alt = "";
+    img.draggable = false;
+    img.decoding = "async";
+    img.style.width = `${w}px`;
+    img.style.left = `${x}px`;
+    img.style.top = `${y}px`;
+
+    makeDraggable(img);
+    layer.appendChild(img);
+    requestAnimationFrame(() => img.classList.add("is-visible"));
+  }
+
+  function scatterImages() {
+    if (!images.length) return;
+
+    const bounds = getScatterBounds();
+    const leftColumnZone = getLeftColumnZone();
+    const otherTextZones = getOtherTextZones();
+    const cells = buildGridCells(bounds, images.length);
+    const assignments = assignCells(cells, images.length, leftColumnZone);
+
+    images.forEach((src, index) => {
+      preloadImage(src)
+        .then((source) => {
+          placeImage(
+            source,
+            index,
+            cells,
+            assignments,
+            bounds,
+            leftColumnZone,
+            otherTextZones
+          );
+        })
+        .catch(() => {});
     });
   }
 
@@ -387,50 +363,5 @@
     });
   }
 
-  async function scatterImages() {
-    const bounds = getScatterBounds();
-    const leftColumnZone = getLeftColumnZone();
-    const otherTextZones = getOtherTextZones();
-    const results = await Promise.allSettled(images.map(preloadImage));
-    const loaded = results
-      .map((result, index) => ({ result, index }))
-      .filter(({ result }) => result.status === "fulfilled")
-      .map(({ result, index }) => ({ source: result.value, index }));
-
-    if (!loaded.length) return;
-
-    const cells = buildGridCells(bounds, loaded.length);
-    const assignments = assignCells(cells, loaded.length, leftColumnZone);
-
-    loaded.forEach(({ source, index }) => {
-      const img = document.createElement("img");
-      const { w, h } = getDisplayDimensions(
-        source.naturalWidth,
-        source.naturalHeight,
-        imageEntries[index].scale
-      );
-      const cell = assignments[index] || cells[index % cells.length];
-      const { x, y } = pickPosition(
-        cell,
-        w,
-        h,
-        bounds,
-        leftColumnZone,
-        otherTextZones
-      );
-
-      img.className = "overview-placed-img";
-      img.src = images[index];
-      img.alt = "";
-      img.draggable = false;
-      img.style.width = `${w}px`;
-      img.style.left = `${x}px`;
-      img.style.top = `${y}px`;
-
-      makeDraggable(img);
-      layer.appendChild(img);
-    });
-  }
-
-  scatterImages().catch(() => {});
+  scatterImages();
 })();

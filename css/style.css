@@ -735,6 +735,12 @@ body.page-overview.is-dragging-image .nav-arrow {
   touch-action: none;
   transform: translate(-50%, -50%);
   cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.overview-placed-img.is-visible {
+  opacity: 1;
 }
 
 .overview-placed-img.is-dragging {
