@@ -32,6 +32,20 @@
     return depth ? "../".repeat(depth) : "";
   }
 
+  function homeHref(pageUrl = location.href) {
+    return `${jsPrefix(pageUrl)}index.html`;
+  }
+
+  function syncLogoHref(pageUrl = location.href) {
+    const logo = document.querySelector(".page .col-left-header .logo");
+    if (!logo) return;
+    logo.setAttribute("href", homeHref(pageUrl));
+  }
+
+  function isSamePage(a, b) {
+    return pageKey(a) === pageKey(b);
+  }
+
   function preloadSiteFont() {
     if (document.querySelector("link[data-ww-font-preload]")) return;
 
@@ -136,8 +150,14 @@
     }
 
     for (const src of pageScripts(doc.body, pageUrl)) {
-      await loadScript(src);
+      try {
+        await loadScript(src);
+      } catch (_) {
+        /* keep navigation usable if one page script fails */
+      }
     }
+
+    syncLogoHref(pageUrl);
   }
 
   function isPersistentNode(node, canvas, savedHeader) {
@@ -165,6 +185,8 @@
     let savedHeader = null;
     if (preserveHeader) {
       savedHeader = currentHeader;
+      const logo = savedHeader.querySelector(".logo");
+      if (logo) logo.setAttribute("href", homeHref(pageUrl));
       savedHeader.remove();
     }
 
@@ -200,7 +222,7 @@
     if (navigating) return;
 
     const url = new URL(href, location.href).href;
-    if (url === location.href) return;
+    if (isSamePage(url, location.href)) return;
 
     navigating = true;
 
@@ -246,4 +268,5 @@
   });
 
   history.replaceState({ wwUrl: location.href }, "", location.href);
+  syncLogoHref();
 })();

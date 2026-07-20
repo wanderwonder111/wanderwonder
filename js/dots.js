@@ -1,4 +1,9 @@
 (function () {
+  if (typeof window.__wwDotsCleanup === "function") {
+    window.__wwDotsCleanup();
+    window.__wwDotsCleanup = null;
+  }
+
   const dots = document.querySelectorAll(".dot");
   const triggerDots = document.querySelectorAll(".dot--trigger");
   const captions = document.querySelectorAll(".dot-caption");
